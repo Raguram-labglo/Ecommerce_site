@@ -1,0 +1,41 @@
+<html>
+    <a href="{% url 'cart'%}">[..Cart page..]</a>
+    <a href="{% url 'orders' %}">[..My Orders..]</a>
+    <a href="{% url 'wish_list' %}">[..Wish list..]</a>
+
+<center>
+    <h1>Ecart</h1>
+<form method="get">
+    {% csrf_token %} 
+    <button><a href="{% url 'logout' %}">logout</a></button> 
+    <button><a href="http://127.0.0.1:8000/ecommerce/search/">Search</a></button>
+</form>
+
+<table>
+    {% for i in products %}
+   <tr>
+    <br>
+       <th><h1>{{i.name}}<br></h1></th>
+   </tr>
+   <tr>
+       
+       <td><img src="{{i.image.url}}", width="200px"></td>
+       <td>  {{i.name}}
+              <br>{{i.title}}<br>
+              Rs {{i.price}}<br>
+              total stocks {{i.in_stock}}<br>
+              <a href="{% url 'add_to_cart' i.id %}"><button>Add to cart</button></a></td>
+            <td>
+              {% if i in alredy %}
+              <a href="{% url 'remove_wish' i.id %}"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwkSl0E2nBfChJktuTw_eV52iKo7ebGK-pc9rMbb1jeA3RsDX_pQgeH2v-QoJ-CrfU4FQ&usqp=CAU" width="20px"></a></td>
+              {% else %}
+              <a href="{% url 'wish' i.id %}"><img src="https://image.pngaaa.com/267/2267-middle.png" width="20px"></a></td>
+              {% endif %}
+
+
+   </tr>
+
+   {% endfor %}
+</table>
+</center>
+</html>
