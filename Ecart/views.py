@@ -29,18 +29,17 @@ def Form_out(request):
     logout(request)
     return redirect('login')
 
-@login_required
+@login_required(login_url= '/ecommerce/')
 def Product_list(request):
-    
-    all_product = Product.objects.all()
-    wish = Wish.objects.get_or_create(user = request.user)
-    wish_list = Wish.objects.get(user = request.user)
-    wish_product = wish_list.favourite.all()
-    alredy_wish = list(wish_product)
-    print(wish)
-    return render(request, 'show.html', {'products':all_product, 'wish':wish_product, 'alredy':alredy_wish})
 
-@login_required()
+    all_product = Product.objects.all()
+    wish, list = Wish.objects.get_or_create(user = request.user)
+    wish_product = wish.favourite.all()
+    alredy_wish = wish_product
+    print(wish)
+    return render(request, 'show.html', {'products':all_product, 'alredy':alredy_wish})
+
+@login_required(login_url= '/ecommerce/')
 def Search(request):
 
     context = {}
@@ -48,11 +47,11 @@ def Search(request):
         find = request.POST.get('need')
         all = Product.objects.all()
         context['product list'] = all
-        suggetions_qs = Product.objects.filter(Q(title__icontains = find) | Q(name__icontains = find) | Q(brand__icontains = find) & Q(in_stock__gt = 0))        
+        suggetions_qs = Product.objects.filter(Q(title__icontains = find) | Q(name__icontains = find) | Q(brand__icontains = find) & Q(in_stock__gt = 0))
         context['data'] = suggetions_qs
     return render(request, 'search.html', context)
 
-@login_required()
+@login_required(login_url= '/ecommerce/')
 def add_to_cart(request, id):
     context = {}
     product_selected = Product.objects.get(id = id)
@@ -62,7 +61,7 @@ def add_to_cart(request, id):
     context['pricedata'] = add_cart
     return redirect(Product_list)
 
-@login_required()
+@login_required(login_url= '/ecommerce/')
 def Show_cart(request):
 
     cart_list = Cart.objects.filter(Q(user = request.user) & Q(is_active = True))
@@ -78,14 +77,14 @@ def Update_cart(request,id):
     update_cart.price = int(update_cart.product.price) * int(update_cart.quantity)
     update_cart.save()
     return render(request, 'cart.html')
-@login_required()
+@login_required(login_url= '/ecommerce/')
 def Remove_cart(request, id):
 
     cart_del = Cart.objects.get(id=id)
     cart_del.delete()
     return redirect(Show_cart)
 
-@login_required()
+@login_required(login_url= '/ecommerce/')
 def Order_details(request):
     
     get_order = Order.objects.filter(user = request.user.id)
@@ -103,7 +102,7 @@ def Order_details(request):
     context = {'order_product':get_order,  'price':price, 'tax':tax, 'tax_price':tax_price, 'data':order_product}
     return render(request, 'order_details.html', context)
 
-@login_required
+@login_required(login_url= '/ecommerce/')
 def Create_order(request):
     user = request.user
     orders = Order.objects.create(user = request.user)
@@ -113,29 +112,29 @@ def Create_order(request):
     orders.save()
     return redirect(Order_details)
 
-@login_required()
+@login_required(login_url= '/ecommerce/')
 def Cancel_order(request, id):
     product = Cart.objects.get(id = id)
     product.delete()
     return redirect(Order_details) 
 
-@login_required
+@login_required(login_url= '/ecommerce/')
 def Wish_list_products(request, id):
 
     wish_product = Product.objects.get(id = id)
     obj,add_wish = Wish.objects.get_or_create(user = request.user)
-    add_fav = Wish.objects.get(user = request.user)
-    add_fav.favourite.add(Product.objects.get(id = id))
+    obj.favourite.add(wish_product)
+    obj.save()
     return redirect(Product_list)
 
-@login_required()
+@login_required(login_url= '/ecommerce/')
 def Show_wish(request):
 
     wished_products = Wish.objects.get(user = request.user)
     context = {'wish_list':wished_products.favourite.all()}
     return render(request, 'wish_list.html', context)
 
-@login_required()
+@login_required(login_url= '/ecommerce/')
 def Remove_wish(request, id):
     product_qs = Product.objects.get(id = id)
     wish_qs = Wish.objects.get(user = request.user)

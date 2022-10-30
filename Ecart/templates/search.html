@@ -29,8 +29,8 @@
     <tr>
         
         <td><img src="{{i.image.url}}", width="300px"></td>
-        <td><a href="">{{i.name}}
-               </a><br>{{i.title}}<br>
+        <td>{{i.name}}
+               <br>{{i.title}}<br>
                Rs {{i.price}}<br>
                total stocks {{i.in_stock}}<br>
                <a href="{% url 'add_to_cart' i.id %}"><button>Add to cart</button></a></td>

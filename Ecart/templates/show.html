@@ -5,7 +5,7 @@
 
 <center>
     <h1>Ecart</h1>
-<form method="get">
+<form method="POST">
     {% csrf_token %} 
     <button><a href="{% url 'logout' %}">logout</a></button> 
     <button><a href="http://127.0.0.1:8000/ecommerce/search/">Search</a></button>
@@ -19,7 +19,7 @@
    </tr>
    <tr>
        
-       <td><img src="{{i.image.url}}", width="200px"></td>
+       <td><img src="{{i.image.url}}", width="300px"></td>
        <td>  {{i.name}}
               <br>{{i.title}}<br>
               Rs {{i.price}}<br>
@@ -37,5 +37,6 @@
 
    {% endfor %}
 </table>
+
 </center>
 </html>
