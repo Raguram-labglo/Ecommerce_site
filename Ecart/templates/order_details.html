@@ -15,7 +15,8 @@
 
             <tr>
                 {{message}}
-                {% for j in data %}
+                {% for i in order_product %}
+                {% for j in i.order_items.all %}
                 
                 <td><img src="{{ j.product.image.url}}" , width="300px"></td>
                 <td>
@@ -23,14 +24,17 @@
                     <p>
 
                         Product: {{j.product.name}} <br>
-                        price :{{j.product.price}}<br>
+                        price :{{j.price}}<br>
                         quantity: {{j.quantity}}<br>
-                        Order status : {{order_product.order_status}}<br>
-                        <a href="{% url 'cancel_order' j.id%}"><button>Cancel order</button></a>
+                        Order status : {{i.order_status}}<br>
+                        order date : {{i.order_time}}<br>
+                        <br>
+                        <a href="{% url 'cancel_order' j.id %}"><button>Cancel order</button></a>
 
                 </td>
 
             </tr>
+            {% endfor %}
             {% endfor %}
 
         </table>
