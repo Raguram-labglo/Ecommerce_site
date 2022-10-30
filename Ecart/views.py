@@ -60,7 +60,7 @@ def add_to_cart(request, id):
     add_cart = Cart.objects.create(user = request.user, product=product_selected , price = price_of_product)
     context['data'] = add_cart.product
     context['pricedata'] = add_cart
-    return render(request, 'add_cart.html', context)
+    return redirect(Product_list)
 
 @login_required()
 def Show_cart(request):
@@ -75,7 +75,7 @@ def Update_cart(request,id):
     quantity = request.POST.get('quantity')
     update_cart = Cart.objects.get(id = id)
     update_cart.quantity = quantity
-    update_cart.price = update_cart.product.price * int(quantity)
+    update_cart.price = int(update_cart.product.price) * int(update_cart.quantity)
     update_cart.save()
     return render(request, 'cart.html')
 @login_required()
@@ -83,12 +83,12 @@ def Remove_cart(request, id):
 
     cart_del = Cart.objects.get(id=id)
     cart_del.delete()
-    return render(request, 'cart.html')
+    return redirect(Show_cart)
 
 @login_required()
 def Order_details(request):
     
-    get_order = Order.objects.filter(user = request.user)
+    get_order = Order.objects.filter(user = request.user.id)
     if get_order == None :
         context = {'message': 'your order page is empty'}
         return render(request, 'order_details.html', context)
@@ -99,9 +99,8 @@ def Order_details(request):
         return render(request, 'order_details.html', context)
     tax = int(18/100*price)
     tax_price = price +tax
-    #order_product = get_order.order_items.all()
-    context = {'order_product':get_order,  'price':price, 'tax':tax, 'tax_price':tax_price}
-    ''''data' : order_product,'''
+    order_product = get_order.values()
+    context = {'order_product':get_order,  'price':price, 'tax':tax, 'tax_price':tax_price, 'data':order_product}
     return render(request, 'order_details.html', context)
 
 @login_required
