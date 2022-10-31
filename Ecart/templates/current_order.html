@@ -1,0 +1,43 @@
+<html>
+    <a href="{% url 'show' %}">[..Home..]</a>
+    <a href="{% url 'cart'%}">[..Cart page..]</a>
+    <a href="{% url 'wish_list' %}">[..Wish list..]</a>
+    <button><a href="{% url 'logout' %}">logout</a></button> 
+<title>orders</title>
+
+<body>
+
+    <center>
+        <h1>My Orders</h1>
+        <table>
+
+
+
+            <tr>
+                {{message}}
+                {% for i in orders %}
+               
+                <td><img src="{{ i.product.image.url}}" , width="300px"></td>
+                <td>
+
+                    <p>
+
+                        Product: {{i.product.name}} <br>
+                        price :{{i.price}}<br>
+                        quantity: {{i.quantity}}<br>
+                        Order status : {{detail.order_status}}<br>
+                        order date : {{detail.order_time}}<br>
+                        <br>
+                        <a href="{% url 'cancel_order' i.id %}"><button>Cancel order</button></a>
+
+                </td>
+
+            </tr>
+            
+            {% endfor %}
+
+        </table>
+     
+            <p>Product price : {{price_of_products}}</p>
+            <p>tax : + {{tax}}</p>
+            <p>Total final price : {{total}}</p>
