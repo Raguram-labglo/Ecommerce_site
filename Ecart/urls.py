@@ -16,5 +16,6 @@ urlpatterns = [path('show/', views.Product_list, name = 'show'),
                path('wish/<int:id>', views.Wish_list_products, name = 'wish'),
                path('wish_list/', views.Show_wish, name = 'wish_list'),
                path('remove_wish/<int:id>', views.Remove_wish, name = 'remove_wish'),
-               path('current_order/', views.current_order, name = 'current_order')
+               path('current_order/', views.current_order, name = 'current_order'),
+               
                ]

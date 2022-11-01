@@ -9,7 +9,7 @@ class Cart_list(admin.ModelAdmin):
 admin.site.register(Cart, Cart_list)
 
 class Order_list(admin.ModelAdmin):
-    list_display = ('id','user', 'order_status')
+    list_display = ('id','user', 'order_price', 'order_status')
 admin.site.register(Order, Order_list)
 
 admin.site.register(Wish)

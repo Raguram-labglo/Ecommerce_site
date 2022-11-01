@@ -29,7 +29,10 @@
                         Order status : {{i.order_status}}<br>
                         order date : {{i.order_time}}<br>
                         <br>
-                        <a href="{% url 'cancel_order' j.id %}"><button>Cancel order</button></a>
+                        <form method = "POST" action="{% url 'cancel_order' j.id %}">
+                            {% csrf_token %}
+                        <button type="submit">Cancel order</button>
+                        </form>
 
                 </td>
 
@@ -42,7 +45,7 @@
         <p>Your orders price : {{price}}</p>
         <p>taxes added(18%) : + {{tax}}</p><hr>
         <h2 style="color: green;">total price : Rs {{tax_price}}</h2>
-        <button> Comtinue and pay </button>
+        
     </center>
 
 </body>

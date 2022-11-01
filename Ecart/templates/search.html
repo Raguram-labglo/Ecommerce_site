@@ -32,8 +32,13 @@
         <td>{{i.name}}
                <br>{{i.title}}<br>
                Rs {{i.price}}<br>
-               total stocks {{i.in_stock}}<br>
-               <a href="{% url 'add_to_cart' i.id %}"><button>Add to cart</button></a></td>
+               stocks :{{i.in_stocks}}<br>
+               <form method="post" action="{% url 'add_to_cart' i.id %}">
+                {% csrf_token %}
+                <button type="submit">Add to cart</button></a>
+
+            </form>
+        </td>
     </tr>
      {% endif %}
     {% endfor %}
