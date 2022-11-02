@@ -29,7 +29,7 @@
                         Order status : {{i.order_status}}<br>
                         order date : {{i.order_time}}<br>
                         <br>
-                        <form method = "POST" action="{% url 'cancel_order' j.id %}">
+                        <form method = "POST" action="{% url 'cancel_order' j.id i.id %}">
                             {% csrf_token %}
                         <button type="submit">Cancel order</button>
                         </form>
