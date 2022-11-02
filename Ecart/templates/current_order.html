@@ -25,13 +25,12 @@
                         Product: {{i.product.name}} <br>
                         price :{{i.price}}<br>
                         quantity: {{i.quantity}}<br>
-                        Order status : {{detail.order_status}}<br>
+                        Order status : {{i.status}}<br>
                         order date : {{detail.order_time}}<br>
                         <br>
                         <form method = "POST" action="{% url 'cancel_order' i.id detail.id %}">
                             {% csrf_token %}
-                        <button type="submit">Cancel order</button>
-                        
+                        <button type="submit">Cancel order</button>                     
                         </form>
                 </td>
 

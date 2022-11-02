@@ -18,8 +18,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
+    path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
-    path('ecommerce/', include('Ecart.urls'))
+    path('ecommerce/', include('Ecart.urls')),
+    
 ]
 
 if settings.DEBUG:
