@@ -5,7 +5,7 @@ from Ecart.models import *
 admin.site.register(Product)
 
 class Cart_list(admin.ModelAdmin):
-    list_display = ('id','user', 'product', 'price', 'quantity')
+    list_display = ('id','user', 'product', 'price', 'quantity', 'status')
 admin.site.register(Cart, Cart_list)
 
 class Order_list(admin.ModelAdmin):

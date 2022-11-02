@@ -1,3 +1,4 @@
+from cairo import Status
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from Ecart.forms import *
@@ -42,7 +43,6 @@ def Product_list(request):
     wish_product_list = []
     for product in alredy_wish:
         wish_product_list.append(product)
-    print(wish_product_list)
     return render(request, 'show.html', {'products': all_product, 'alredy': wish_product_list})
 
 
@@ -109,11 +109,11 @@ def Order_details(request):
     if get_order == None:
         context = {'message': 'your order page is empty'}
         return render(request, 'order_details.html', context)
-    total_orders_price = Order.objects.filter(
-        user=request.user).aggregate(Sum('order_items__price'))
+    total_orders_price = Order.objects.filter(Q(user=request.user) & Q(order_items__status = 'pending')).aggregate(Sum('order_items__price'))
     price = total_orders_price['order_items__price__sum']
     if price == None:
-        context = {'message': 'your order page is empty'}
+        get_order = Order.objects.filter(user=request.user.id)
+        context = {'order_product': get_order}
         return render(request, 'order_details.html', context)
     tax = int(18/100*price)
     tax_price = price + tax
@@ -130,8 +130,8 @@ def current_order(request):
     if get_order == None:
         context = {'message': 'your have no current orders'}
         return render(request, 'order_details.html', context)
-    current_products = get_order.order_items.all()
-    price_of_products = get_order.order_items.values(
+    current_products = get_order.order_items.filter(status = 'pending').all()
+    price_of_products = current_products.values(
         'price').aggregate(Sum('price'))['price__sum']
     if price_of_products == None:
         context = {'message': 'your have no current orders'}
@@ -147,7 +147,6 @@ def current_order(request):
 
 @login_required(login_url='/ecommerce/')
 def Create_order(request):
-    user = request.user
     orders = Order.objects.create(user=request.user)
     orders.order_items.add(
         *Cart.objects.filter(Q(user=request.user) & Q(is_active=True)))
@@ -163,8 +162,6 @@ def Cancel_order(request, cart_id, order_id):
     product.status = 'failed'
     product.save()
     get_order = Order.objects.get(id = order_id)
-    get_order.order_items.remove(product)
-    
     price_of_products = get_order.order_items.values('price').aggregate(Sum('price'))['price__sum']
     if price_of_products == None:
         context = {'message': 'your have no current orders'}
@@ -173,7 +170,6 @@ def Cancel_order(request, cart_id, order_id):
     tax = int(18/100*price_of_products)
     get_order.tax_price = tax
     get_order.save()
-    empty_data = Order.objects.filter(order_items__isnull=True).delete()
     return redirect(Order_details)
 
 
@@ -181,7 +177,6 @@ def Cancel_order(request, cart_id, order_id):
 def Wish_list_products(request, id):
     if request.method == "POST":
         wish_product = Product.objects.get(id=id)
-        print(wish_product)
         obj, add_wish = Wish.objects.get_or_create(user=request.user)
         obj.favourite.add(wish_product)
         obj.save()

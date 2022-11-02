@@ -26,8 +26,8 @@
                     <form method="POST" action="{% url 'update_cart' i.id%}">
 
                         {% csrf_token %}
-                        <input type="number" value={{i.quantity}} name='quantity' required=True><button
-                            type="submit">apply</button>
+                        <input type="number" value={{i.quantity}} name='quantity' required=True min = 1 max = 20> 
+                        <button type="submit">apply</button>
 
                     </form>
                     <form method="POST" action="{% url 'del_cart' i.id%}">
