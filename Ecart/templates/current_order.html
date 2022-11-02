@@ -28,7 +28,7 @@
                         Order status : {{detail.order_status}}<br>
                         order date : {{detail.order_time}}<br>
                         <br>
-                        <form method = "POST" action="{% url 'cancel_order' i.id %}">
+                        <form method = "POST" action="{% url 'cancel_order' i.id detail.id %}">
                             {% csrf_token %}
                         <button type="submit">Cancel order</button>
                         
@@ -49,4 +49,4 @@
             <h2 style="color: green;">Total final price : {{total}}</h2>
             
             <button type="submit"> Continue and pay </button>
-            
+

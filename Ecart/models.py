@@ -20,6 +20,7 @@ class Cart(models.Model):
     product = models.ForeignKey(Product,  null=True, on_delete=models.CASCADE)
     price = models.FloatField(null=True)
     quantity = models.IntegerField(default=1)
+    status = models.CharField(max_length=60, choices=order, default='pending')
     is_active = models.BooleanField(default=True)
 
 

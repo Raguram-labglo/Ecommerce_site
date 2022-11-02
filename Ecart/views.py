@@ -158,11 +158,13 @@ def Create_order(request):
 
 
 @login_required(login_url='/ecommerce/')
-def Cancel_order(request, id):
-    product = Cart.objects.get(id=id)
-    product.delete()
-    get_order = Order.objects.filter(
-        Q(user=request.user.id) & Q(order_status='pending')).last()
+def Cancel_order(request, cart_id, order_id):
+    product = Cart.objects.get(id=cart_id)
+    product.status = 'failed'
+    product.save()
+    get_order = Order.objects.get(id = order_id)
+    get_order.order_items.remove(product)
+    
     price_of_products = get_order.order_items.values('price').aggregate(Sum('price'))['price__sum']
     if price_of_products == None:
         context = {'message': 'your have no current orders'}
@@ -196,6 +198,7 @@ def Show_wish(request):
 
 @login_required(login_url='/ecommerce/')
 def Remove_wish(request, id):
+
     if request.method == "POST":
         product_qs = Product.objects.get(id=id)
         wish_qs = Wish.objects.get(user=request.user)
