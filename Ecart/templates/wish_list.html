@@ -1,7 +1,7 @@
 <html>
     <a href="{% url 'show' %}">[..Home..]</a>
     <a href="{% url 'cart'%}">[..Cart page..]</a>
-    <a href="{% url 'orders' %}">[..My Orders..]</a>
+    <a href="{% url 'orders' %}">[..My Orders history..]</a>
     <button><a href="{% url 'logout' %}">logout</a></button> 
 <title>
     wish list
@@ -19,6 +19,16 @@
         {{fav.price}}<br>
         {{fav.in_stock}}<br>
         <a href="{% url 'add_to_cart' fav.id %}"><button>Add to cart</button></a>
+        <td>
+        <form method="post" action="{% url 'remove_wish' fav.id %}">
+            {% csrf_token %}
+            <button type="submit" ><img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwkSl0E2nBfChJktuTw_eV52iKo7ebGK-pc9rMbb1jeA3RsDX_pQgeH2v-QoJ-CrfU4FQ&usqp=CAU"
+                width="20px"></button>
+                
+
+        </form>
+        </td>
     </td>
         {% endfor %}
         </tr>

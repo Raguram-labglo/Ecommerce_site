@@ -2,7 +2,7 @@
 <a href="{% url 'show' %}">[..Home..]</a>
 <a href="{% url 'wish_list' %}">[..Wish list..]</a>
 <title>Cart</title>
-<a href="{% url 'orders' %}">[..My Orders..]</a>
+<a href="{% url 'orders' %}">[..My Orders history..]</a>
 <button><a href="{% url 'logout' %}">logout</a></button>
 {% csrf_token %}
 <center>
@@ -20,7 +20,7 @@
 
                 <td>{{i.product.name}}<br>
                     {{i.product.title}}<br>
-                    Rs {{i.price}}<br>
+                    Rs {{i.product.price}}<br>
                     Quantity : {{i.quantity}}<br>
                     total stocks {{i.product.in_stock}}<br>
                     <form method="POST" action="{% url 'update_cart' i.id%}">
