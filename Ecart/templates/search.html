@@ -3,7 +3,7 @@
     <title>Search you want</title>
     <a href="{% url 'show' %}">[..Home..]</a>
     <a href="{% url 'cart'%}">[..Cart page..]</a>
-    <a href="{% url 'orders' %}">[..My Orders..]</a>
+    <a href="{% url 'orders' %}">[..My Orders history..]</a>
     <a href="{% url 'wish_list' %}">[..Wish list..]</a>
     <button><a href="{% url 'logout' %}">logout</a></button> 
 
@@ -11,18 +11,18 @@
     <h1>Ecart</h1>
     <button><a href="{% url 'logout' %}">logout</a></button>    
     <br>
-<form method="post">
+<form method="post" action="{% url 'search' %}">
     {% csrf_token %}  
     <br>
-    <input type="text" , name="need">
-    <button><a>Search</a></button>
+    <input type="text" name="need">
+    <button type = "submit">Search</button>
 </form>
     <br>
     <br>
    
    <table>
      {% for i in data %}
-     {% if i.in_stock > 0 %}
+  
     <tr>
         <th><h1>{{i.name}}</h1></th>
     </tr>
@@ -40,7 +40,6 @@
             </form>
         </td>
     </tr>
-     {% endif %}
     {% endfor %}
 </table>
 </center>

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.db.models import Sum
+from .models import pending, success, failed
 
 
 def Form_in(request):
@@ -54,9 +55,9 @@ def Search(request):
         find = request.POST.get('need')
         all = Product.objects.all()
         context['product list'] = all
-        suggetions_qs = Product.objects.filter(Q(title__icontains=find) | Q(
-            name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True))
+        suggetions_qs = Product.objects.filter(Q(title__icontains=find) | Q(name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True))
         context['data'] = suggetions_qs
+        print(context)
     return render(request, 'search.html', context)
 
 
@@ -109,7 +110,8 @@ def Order_details(request):
     if get_order == None:
         context = {'message': 'your order page is empty'}
         return render(request, 'order_details.html', context)
-    total_orders_price = Order.objects.filter(Q(user=request.user) & Q(order_items__status = 'pending')).aggregate(Sum('order_items__price'))
+    total_orders_price = Order.objects.filter(Q(user=request.user) & Q(
+        order_items__status=pending)).aggregate(Sum('order_items__price'))
     price = total_orders_price['order_items__price__sum']
     if price == None:
         get_order = Order.objects.filter(user=request.user.id)
@@ -121,16 +123,16 @@ def Order_details(request):
     context = {'order_product': get_order,  'price': price,
                'tax': tax, 'tax_price': tax_price}
     return render(request, 'order_details.html', context)
-    
+
 
 @login_required(login_url='/ecommerce/')
 def current_order(request):
     get_order = Order.objects.filter(
-        Q(user=request.user.id) & Q(order_status='pending')).last()
+        Q(user=request.user.id) & Q(order_status=1)).last()
     if get_order == None:
         context = {'message': 'your have no current orders'}
         return render(request, 'order_details.html', context)
-    current_products = get_order.order_items.filter(status = 'pending').all()
+    current_products = get_order.order_items.filter(status=1).all()
     price_of_products = current_products.values(
         'price').aggregate(Sum('price'))['price__sum']
     if price_of_products == None:
@@ -159,11 +161,13 @@ def Create_order(request):
 @login_required(login_url='/ecommerce/')
 def Cancel_order(request, cart_id, order_id):
     product = Cart.objects.get(id=cart_id)
-    product.status = 'failed'
+    product.status = failed
     product.save()
-    get_order = Order.objects.get(id = order_id)
-    price_of_products = get_order.order_items.values('price').aggregate(Sum('price'))['price__sum']
+    get_order = Order.objects.get(id=order_id)
+    price_of_products = get_order.order_items.values(
+        'price').aggregate(Sum('price'))['price__sum']
     if price_of_products == None:
+        get_order.delete()
         context = {'message': 'your have no current orders'}
         return render(request, 'current_order.html', context)
     get_order.order_price = int(price_of_products)

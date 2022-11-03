@@ -2,8 +2,14 @@ from email.policy import default
 from operator import mod
 from django.db import models
 from django.contrib.auth.models import User
-order = [('pending', 'pending'), ('success', 'success'),
-         ('failed', 'failed')]
+
+failed = 0
+pending = 1
+success = 2
+
+order = [(pending, 'pending'), 
+        (success, 'success'),
+        (failed, 'failed')]
 
 
 class Product(models.Model):
@@ -20,15 +26,14 @@ class Cart(models.Model):
     product = models.ForeignKey(Product,  null=True, on_delete=models.CASCADE)
     price = models.FloatField(null=True)
     quantity = models.IntegerField(default=1)
-    status = models.CharField(max_length=60, choices=order, default='pending')
+    status = models.IntegerField(choices=order, default=pending)
     is_active = models.BooleanField(default=True)
 
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order_items = models.ManyToManyField(Cart)
-    order_status = models.CharField(
-        max_length=60, choices=order, default='pending')
+    order_status = models.IntegerField(choices=order, default=pending)
     order_price = models.IntegerField(null=True)
     tax_price = models.IntegerField(null=True)
     order_time = models.DateTimeField(auto_now_add=True)
